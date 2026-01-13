@@ -15,7 +15,10 @@ from typing import Dict, Iterable, List, Sequence, Tuple
 
 import requests  # type: ignore[reportMissingImports]
 
-
+# BOTNOI_TOKEN = os.environ.get("BOTNOI_TOKEN")
+# if not BOTNOI_TOKEN:
+#     raise ValueError("BOTNOI_TOKEN is not set")
+BOTNOI_TOKEN = 'MKxsMU7u7hC6iUBJzKLbraO1Cb21D6AM'
 API_URL = "https://api-voice.botnoi.ai/openapi/v1/generate_audio"
 SOURCE_DIR = Path("data/audio")
 DEST_DIR = Path("tone-cheatsheet/public/audio")
@@ -155,10 +158,11 @@ def copy_to_public(filenames: Iterable[str]) -> List[str]:
 
 
 def main() -> int:
-    token = os.environ.get("BOTNOI_TOKEN")
-    if not token:
-        print("BOTNOI_TOKEN is not set; aborting.")
-        return 1
+    # token = os.environ.get("BOTNOI_TOKEN")
+    # if not token:
+    #     print("BOTNOI_TOKEN is not set; aborting.")
+    #     return 1
+    token = 'MKxsMU7u7hC6iUBJzKLbraO1Cb21D6AM'
 
     ensure_dirs()
     session = requests.Session()
