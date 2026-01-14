@@ -19,7 +19,7 @@ import requests  # type: ignore[reportMissingImports]
 # if not BOTNOI_TOKEN:
 #     raise ValueError("BOTNOI_TOKEN is not set")
 BOTNOI_TOKEN = 'MKxsMU7u7hC6iUBJzKLbraO1Cb21D6AM'
-API_URL = "https://api-voice.botnoi.ai/openapi/v1/generate_audio"
+API_URL = "https://api-voice.botnoi.ai/openapi/v1/generate_audio_v2"
 SOURCE_DIR = Path("data/audio")
 DEST_DIR = Path("tone-cheatsheet/public/audio")
 MAX_ATTEMPTS = 3
@@ -59,13 +59,12 @@ class GenerationError(Exception):
 def build_payload(text: str) -> Dict[str, object]:
     return {
         "text": text,
-        "speaker": "1",
+        "speaker": "8",
         "volume": 1,
         "speed": 1,
         "type_media": "mp3",
-        "save_file": "true",
+        "save_file": "True",
         "language": "th",
-        "page": "user",
     }
 
 
