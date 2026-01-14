@@ -1,0 +1,52 @@
+{
+  "voices": [
+    {
+      "id": "default-female",
+      "label": "Female (default)",
+      "gender": "female",
+      "description": "Existing clear female recordings (current site defaults).",
+      "basePath": "/audio/default-female",
+      "sample": "ka-samanj.mp3"
+    },
+    {
+      "id": "male",
+      "label": "Male",
+      "gender": "male",
+      "description": "Male take. Currently mirrors default until new recordings are added.",
+      "basePath": "/audio/male",
+      "sample": "ka-samanj.mp3"
+    },
+    {
+      "id": "child",
+      "label": "Child",
+      "gender": "child",
+      "description": "Child take. Currently mirrors default until new recordings are added.",
+      "basePath": "/audio/child",
+      "sample": "ka-samanj.mp3"
+    }
+  ],
+  "clips": [
+    { "word": "กา", "file": "ka-samanj.mp3" },
+    { "word": "ก่า", "file": "ka-ek.mp3" },
+    { "word": "ก้า", "file": "ka-tho.mp3" },
+    { "word": "ก๊า", "file": "ka-tri.mp3" },
+    { "word": "ก๋า", "file": "ka-jatwa.mp3" },
+    { "word": "จะ", "file": "ja-ek.mp3" },
+    { "word": "จ้ะ", "file": "ja-tho.mp3" },
+    { "word": "จ๊ะ", "file": "ja-tri.mp3" },
+    { "word": "จ๋ะ", "file": "ja-jatwa.mp3" },
+    { "word": "ขา", "file": "kha-long-jatwa.mp3" },
+    { "word": "ข่า", "file": "kha-long-ek.mp3" },
+    { "word": "ข้า", "file": "kha-long-tho.mp3" },
+    { "word": "ขะ", "file": "kha-short-ek.mp3" },
+    { "word": "ข้ะ", "file": "kha-short-tho.mp3" },
+    { "word": "คา", "file": "kha-low-samanj.mp3" },
+    { "word": "ค่า", "file": "kha-low-tho.mp3" },
+    { "word": "ค้า", "file": "kha-low-tri.mp3" },
+    { "word": "คะ", "file": "kha-short-low-tri.mp3" },
+    { "word": "ค่ะ", "file": "kha-short-low-tho.mp3" },
+    { "word": "ค๋ะ", "file": "kha-short-low-jatwa.mp3" },
+    { "word": "โคก", "file": "khok-tho.mp3" },
+    { "word": "โค้ก", "file": "khohk-tri.mp3" }
+  ]
+}

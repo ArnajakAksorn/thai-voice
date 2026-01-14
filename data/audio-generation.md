@@ -1,6 +1,7 @@
 # Botnoi audio generation (tone examples)
 
-This project ships empty placeholder MP3s for every example word. Generate real audio with Botnoi, save them with the filenames below into `data/audio/`, then copy them into `tone-cheatsheet/public/audio/` for the web app to play.
+This project ships empty placeholder MP3s for every example word. Generate real audio with Botnoi, save them with the filenames below into `data/audio/`, then mirror them into `tone-cheatsheet/public/audio/<voice-id>/` for the web app to play.  
+Multi-voice layout: each voice gets its own folder (e.g., `default-female/`), and `tone-cheatsheet/public/voices.json` lists the available voices and which folder to load from.
 
 ## Filenames to produce
 
@@ -62,7 +63,9 @@ def download(audio_url, dest_path):
 ```
 
 3) For each row in the table, call `audio_url = synth("<thai text>")`, then `download(audio_url, f"data/audio/<filename>")`.  
-4) Mirror into the app: `cp data/audio/*.mp3 tone-cheatsheet/public/audio/`.  
-5) Run the app and click the 🔊 button beside each example to confirm playback.
+4) Mirror into the app for a given voice ID, e.g. the default female set:  
+   `mkdir -p tone-cheatsheet/public/audio/default-female && cp data/audio/*.mp3 tone-cheatsheet/public/audio/default-female/`  
+5) Add or update a voice entry in `tone-cheatsheet/public/voices.json` with your new `id`, `label`, and `basePath` (e.g., `/audio/default-female`).  
+6) Run the app and click the 🔊 button beside each example to confirm playback; the global voice selector should point at your new voice.
 
 If Botnoi returns a non-200 response, re-run that word; keep filenames exactly as listed so the UI resolves them.

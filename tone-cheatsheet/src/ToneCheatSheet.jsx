@@ -1,6 +1,13 @@
 import React, { useState, useRef } from 'react';
 
-const ToneCheatSheet = () => {
+const ToneCheatSheet = ({
+  audioMap,
+  voices,
+  selectedVoice,
+  onVoiceChange,
+  isLoading,
+  error,
+}) => {
   const [activeRule, setActiveRule] = useState(null);
   
   // Color scheme
@@ -20,33 +27,11 @@ const ToneCheatSheet = () => {
     จัตวา: '#EF4444',
   };
 
-  // Audio filenames (ASCII-safe) per example word
-  const audioMap = {
-    'กา': 'ka-samanj.mp3',
-    'ก่า': 'ka-ek.mp3',
-    'ก้า': 'ka-tho.mp3',
-    'ก๊า': 'ka-tri.mp3',
-    'ก๋า': 'ka-jatwa.mp3',
-    'จะ': 'ja-ek.mp3',
-    'จ้ะ': 'ja-tho.mp3',
-    'จ๊ะ': 'ja-tri.mp3',
-    'จ๋ะ': 'ja-jatwa.mp3',
-    'ขา': 'kha-long-jatwa.mp3',
-    'ข่า': 'kha-long-ek.mp3',
-    'ข้า': 'kha-long-tho.mp3',
-    'ขะ': 'kha-short-ek.mp3',
-    'ข้ะ': 'kha-short-tho.mp3',
-    'คา': 'kha-low-samanj.mp3',
-    'ค่า': 'kha-low-tho.mp3',
-    'ค้า': 'kha-low-tri.mp3',
-    'คะ': 'kha-short-low-tri.mp3',
-    'ค่ะ': 'kha-short-low-tho.mp3',
-    'ค๋ะ': 'kha-short-low-jatwa.mp3',
-    'โคก': 'khok-tho.mp3',
-    'โค้ก': 'khohk-tri.mp3',
-  };
+  const audioFor = (word) => audioMap?.[word];
 
   const audioRef = useRef(null);
+
+  const baseAudioPath = selectedVoice?.basePath?.replace(/\/$/, '') || '/audio';
 
   const handlePlay = (file) => {
     if (!file) return;
@@ -54,13 +39,24 @@ const ToneCheatSheet = () => {
       audioRef.current = new Audio();
     }
     const audio = audioRef.current;
-    audio.pause();
-    audio.src = `/audio/${file}`;
-    audio.currentTime = 0;
-    audio.play().catch((err) => {
-      // eslint-disable-next-line no-console
-      console.error('Audio play failed', err);
-    });
+    const primarySrc = `${baseAudioPath}/${file}`;
+    const fallbackSrc = `/audio/${file}`;
+
+    const playFrom = (src, allowFallback) => {
+      audio.pause();
+      audio.src = src;
+      audio.currentTime = 0;
+      audio.play().catch((err) => {
+        if (allowFallback && src !== fallbackSrc) {
+          playFrom(fallbackSrc, false);
+          return;
+        }
+        // eslint-disable-next-line no-console
+        console.error('Audio play failed', err);
+      });
+    };
+
+    playFrom(primarySrc, true);
   };
 
   const rules = [
@@ -71,11 +67,11 @@ const ToneCheatSheet = () => {
       base: 'สามัญ',
       count: 5,
       tones: [
-        { shape: 'สามัญ', sound: 'สามัญ', example: 'กา', audio: audioMap['กา'] },
-        { shape: 'เอก', sound: 'เอก', example: 'ก่า', audio: audioMap['ก่า'] },
-        { shape: 'โท', sound: 'โท', example: 'ก้า', audio: audioMap['ก้า'] },
-        { shape: 'ตรี', sound: 'ตรี', example: 'ก๊า', audio: audioMap['ก๊า'] },
-        { shape: 'จัตวา', sound: 'จัตวา', example: 'ก๋า', audio: audioMap['ก๋า'] },
+        { shape: 'สามัญ', sound: 'สามัญ', example: 'กา', audio: audioFor('กา') },
+        { shape: 'เอก', sound: 'เอก', example: 'ก่า', audio: audioFor('ก่า') },
+        { shape: 'โท', sound: 'โท', example: 'ก้า', audio: audioFor('ก้า') },
+        { shape: 'ตรี', sound: 'ตรี', example: 'ก๊า', audio: audioFor('ก๊า') },
+        { shape: 'จัตวา', sound: 'จัตวา', example: 'ก๋า', audio: audioFor('ก๋า') },
       ],
       note: 'รูป = เสียง ตรงกันหมด'
     },
@@ -86,10 +82,10 @@ const ToneCheatSheet = () => {
       base: 'เอก',
       count: 4,
       tones: [
-        { shape: '—', sound: 'เอก', example: 'จะ', audio: audioMap['จะ'] },
-        { shape: 'โท', sound: 'โท', example: 'จ้ะ', audio: audioMap['จ้ะ'] },
-        { shape: 'ตรี', sound: 'ตรี', example: 'จ๊ะ', audio: audioMap['จ๊ะ'] },
-        { shape: 'จัตวา', sound: 'จัตวา', example: 'จ๋ะ', audio: audioMap['จ๋ะ'] },
+        { shape: '—', sound: 'เอก', example: 'จะ', audio: audioFor('จะ') },
+        { shape: 'โท', sound: 'โท', example: 'จ้ะ', audio: audioFor('จ้ะ') },
+        { shape: 'ตรี', sound: 'ตรี', example: 'จ๊ะ', audio: audioFor('จ๊ะ') },
+        { shape: 'จัตวา', sound: 'จัตวา', example: 'จ๋ะ', audio: audioFor('จ๋ะ') },
       ],
       note: 'ไม่มีรูป → เสียงเอก'
     },
@@ -100,9 +96,9 @@ const ToneCheatSheet = () => {
       base: 'จัตวา',
       count: 3,
       tones: [
-        { shape: '—', sound: 'จัตวา', example: 'ขา', audio: audioMap['ขา'] },
-        { shape: 'เอก', sound: 'เอก', example: 'ข่า', audio: audioMap['ข่า'] },
-        { shape: 'โท', sound: 'โท', example: 'ข้า', audio: audioMap['ข้า'] },
+        { shape: '—', sound: 'จัตวา', example: 'ขา', audio: audioFor('ขา') },
+        { shape: 'เอก', sound: 'เอก', example: 'ข่า', audio: audioFor('ข่า') },
+        { shape: 'โท', sound: 'โท', example: 'ข้า', audio: audioFor('ข้า') },
       ],
       note: 'ไม่มีรูป → เสียงจัตวา'
     },
@@ -113,8 +109,8 @@ const ToneCheatSheet = () => {
       base: 'เอก',
       count: 2,
       tones: [
-        { shape: '—', sound: 'เอก', example: 'ขะ', audio: audioMap['ขะ'] },
-        { shape: 'โท', sound: 'โท', example: 'ข้ะ', audio: audioMap['ข้ะ'] },
+        { shape: '—', sound: 'เอก', example: 'ขะ', audio: audioFor('ขะ') },
+        { shape: 'โท', sound: 'โท', example: 'ข้ะ', audio: audioFor('ข้ะ') },
       ],
       note: 'ผันได้น้อยที่สุด'
     },
@@ -125,9 +121,9 @@ const ToneCheatSheet = () => {
       base: 'สามัญ',
       count: 3,
       tones: [
-        { shape: '—', sound: 'สามัญ', example: 'คา', audio: audioMap['คา'] },
-        { shape: 'เอก', sound: 'โท', example: 'ค่า', audio: audioMap['ค่า'] },
-        { shape: 'โท', sound: 'ตรี', example: 'ค้า', audio: audioMap['ค้า'] },
+        { shape: '—', sound: 'สามัญ', example: 'คา', audio: audioFor('คา') },
+        { shape: 'เอก', sound: 'โท', example: 'ค่า', audio: audioFor('ค่า') },
+        { shape: 'โท', sound: 'ตรี', example: 'ค้า', audio: audioFor('ค้า') },
       ],
       note: 'รูป ≠ เสียง (เลื่อนขึ้น 1)'
     },
@@ -138,9 +134,9 @@ const ToneCheatSheet = () => {
       base: 'ตรี',
       count: 3,
       tones: [
-        { shape: '—', sound: 'ตรี', example: 'คะ', audio: audioMap['คะ'] },
-        { shape: 'เอก', sound: 'โท', example: 'ค่ะ', audio: audioMap['ค่ะ'] },
-        { shape: 'จัตวา', sound: 'จัตวา', example: 'ค๋ะ', audio: audioMap['ค๋ะ'] },
+        { shape: '—', sound: 'ตรี', example: 'คะ', audio: audioFor('คะ') },
+        { shape: 'เอก', sound: 'โท', example: 'ค่ะ', audio: audioFor('ค่ะ') },
+        { shape: 'จัตวา', sound: 'จัตวา', example: 'ค๋ะ', audio: audioFor('ค๋ะ') },
       ],
       note: 'พื้นเสียงตรี'
     },
@@ -151,8 +147,8 @@ const ToneCheatSheet = () => {
       base: 'โท',
       count: 2,
       tones: [
-        { shape: '—', sound: 'โท', example: 'โคก', audio: audioMap['โคก'] },
-        { shape: 'โท', sound: 'ตรี', example: 'โค้ก', audio: audioMap['โค้ก'] },
+        { shape: '—', sound: 'โท', example: 'โคก', audio: audioFor('โคก') },
+        { shape: 'โท', sound: 'ตรี', example: 'โค้ก', audio: audioFor('โค้ก') },
       ],
       note: 'พื้นเสียงโท'
     },
@@ -388,6 +384,9 @@ const ToneCheatSheet = () => {
     );
   };
 
+  const hasVoices = Array.isArray(voices) && voices.length > 0;
+  const voiceSelectValue = selectedVoice?.id ?? '';
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -396,7 +395,7 @@ const ToneCheatSheet = () => {
       padding: '24px',
     }}>
       {/* Header */}
-      <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '24px' }}>
         <h1 style={{
           fontSize: '32px',
           fontWeight: '800',
@@ -410,6 +409,73 @@ const ToneCheatSheet = () => {
         <p style={{ color: '#6B7280', fontSize: '14px' }}>
           กดที่การ์ดเพื่อดูรายละเอียด
         </p>
+      </div>
+
+      {/* Voice selector */}
+      <div style={{
+        maxWidth: '720px',
+        margin: '0 auto 20px',
+        padding: '14px 16px',
+        backgroundColor: 'white',
+        borderRadius: '12px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: '12px',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ fontWeight: '700', color: '#1F2937' }}>เลือกเสียง</span>
+          <select
+            value={voiceSelectValue}
+            onChange={(e) => onVoiceChange?.(e.target.value)}
+            disabled={!hasVoices}
+            style={{
+              padding: '8px 10px',
+              borderRadius: '8px',
+              border: '1px solid #D1D5DB',
+              fontSize: '13px',
+              minWidth: '180px',
+              backgroundColor: hasVoices ? 'white' : '#F3F4F6',
+              color: hasVoices ? '#111827' : '#9CA3AF',
+              cursor: hasVoices ? 'pointer' : 'not-allowed',
+            }}
+          >
+            {hasVoices ? voices.map((voice) => (
+              <option key={voice.id} value={voice.id}>
+                {voice.label || voice.id}
+              </option>
+            )) : <option value="">ไม่มีรายการเสียง</option>}
+          </select>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, justifyContent: 'flex-end', minWidth: '220px' }}>
+          <div style={{ fontSize: '12px', color: '#4B5563', textAlign: 'right' }}>
+            {isLoading && 'กำลังโหลดรายการเสียง...'}
+            {!isLoading && selectedVoice?.description}
+            {!isLoading && !hasVoices && !error && 'ยังไม่มีรายการเสียงในไฟล์ voices.json'}
+            {error && <span style={{ color: '#DC2626' }}>{error}</span>}
+          </div>
+          <button
+            onClick={() => handlePlay(selectedVoice?.sample)}
+            disabled={!selectedVoice?.sample}
+            style={{
+              border: '1px solid #3B82F6',
+              backgroundColor: selectedVoice?.sample ? '#EFF6FF' : '#F3F4F6',
+              color: '#1D4ED8',
+              borderRadius: '999px',
+              padding: '6px 12px',
+              fontSize: '12px',
+              fontWeight: '700',
+              cursor: selectedVoice?.sample ? 'pointer' : 'not-allowed',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
+              minWidth: '80px',
+            }}
+            aria-label="เล่นเสียงตัวอย่าง"
+          >
+            🔊 ตัวอย่าง
+          </button>
+        </div>
       </div>
 
       {/* Legend */}
